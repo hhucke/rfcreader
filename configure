@@ -1,0 +1,98 @@
+#!/bin/bash
+##
+## configure script to configure the package <packagename>
+##
+SED="/usr/bin/sed"
+MONTHYEAR="`date +'%B %Y'`"
+PACKAGENAME=""
+PREFIX=""
+EXECPREFIX=""
+SBINDIR=""
+LIBEXECDIR=""
+MANDIR=""
+VERSION=""
+AUTHOR=""
+DIRECTORY="./"
+
+while [ $# -ge 1 ]; do
+	case $1 in
+		-d|--directory)
+			DIRECTORY="$2"; shift;;
+		--packagename=*)
+			PACKAGENAME="${1##--packagename=}";;
+		--version=*)
+			VERSION="${1##--version=}";;
+		--author=*)
+			AUTHOR="${1##--author=}";;
+		--email=*)
+			EMAIL="${1##--email=}";;
+		--prefix=*)
+			PREFIX="${1##--prefix=}";;
+		--exec-prefix=*)
+			EXECPREFIX="${1##--exec-prefix=}";;
+		--bindir=*)
+			BINDIR="${1##--bindir=}";;
+		--sbindir=*)
+			SBINDIR="${1##--sbindir=}";;
+		--sysconfdir=*)
+			SYSCONFDIR="${1##--sysconfdir=}";;
+		--datadir=*)
+			DATADIR="${1##--datadir=}";;
+		--includedir=*)
+			INCLUDEDIR="${1##--includedir=}";;
+		--libdir=*)
+			LIBDIR="${1##--libdir=}";;
+		--libexecdir=*)
+			LIBEXECDIR="${1##--libexecdir=}";;
+		--localstatedir=*)
+			LOCALSTATEDIR="${1##--localstatedir=}";;
+		--sharedstatedir=*)
+			SHAREDSTATEDIR="${1##--sharedstatedir=}";;
+		--mandir=*)
+			MANDIR="${1##--mandir=}";;
+		--infodir=*)
+			INFODIR="${1##--infodir=}";;
+	esac
+	shift
+done;
+
+: ${PACKAGENAME:=rfcreader}
+: ${VERSION:=0.0.1}
+: ${AUTHOR:=Henning Hucke}
+: ${EMAIL:='h_hucke+rfc@aeon.icebear.org'}
+: ${PREFIX:=/usr}
+: ${EXECPREFIX:=$PREFIX}
+: ${BINDIR:=$EXECPREFIX/bin}
+: ${SBINDIR:=$EXECPREFIX/sbin}
+: ${SYSCONFDIR:=$PREFIX/etc}
+: ${DATADIR:=$PREFIX/share}
+: ${INCLUDEDIR:=$PREFIX/include}
+: ${LIBDIR:=$EXECPREFIX/lib}
+: ${LIBEXECDIR:=$EXECPREFIX/libexec}
+: ${LOCALSTATEDIR:=$PREFIX/var}
+: ${SHAREDSTATEDIR:=$PREFIX/com}
+: ${MANDIR:=$DATADIR/man}
+: ${INFODIR:=$DATADIR/info}
+
+find $DIRECTORY -type f -name "*.in" | \
+{	while read file; do
+		sed -e "s%@PACKAGENAME@%${PACKAGENAME}%g;\
+			s%@MONTHYEAR@%${MONTHYEAR}%g;\
+			s%@VERSION@%${VERSION}%g;\
+			s%@AUTHOR@%${AUTHOR}%g;\
+			s%@EMAIL@%${EMAIL}%g;\
+			s%@PREFIX@%${PREFIX}%g;\
+			s%@EXECPREFIX@%${EXECPREFIX}%g;\
+			s%@BINDIR@%${BINDIR}%g;\
+			s%@SBINDIR@%${SBINDIR}%g;\
+			s%@SYSCONFDIR@%${SYSCONFDIR}%g;\
+			s%@DATADIR@%${DATADIR}%g;\
+			s%@INCLUDEDIR@%${INCLUDEDIR}%g;\
+			s%@LIBDIR@%${LIBDIR}%g;\
+			s%@LIBEXECDIR@%${LIBEXECDIR}%g;\
+			s%@LOCALSTATEDIR@%${LOCALSTATEDIR}%g;\
+			s%@SHAREDSTATEDIR@%${SHAREDSTATEDIR}%g;\
+			s%@MANDIR@%${MANDIR}%g;\
+			s%@INFODIR@%${INFODIR}%g" <${file} >${file%%.in}
+	done
+}

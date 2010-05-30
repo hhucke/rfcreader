@@ -1,0 +1,140 @@
+#!/bin/bash
+##
+## vim:foldmethod=marker:nowrap:
+##
+## usage: @PACKAGENAME@ [-f] rfcnum|rfcname [rfcnum|rfcname ...]
+##
+## where	"rfcnum"	is the numerical part of the rfc you want to
+##				see,
+##		"rfcname"	is a name if a rfc file (for instance
+##				"rfc-index") and
+##		"-f"		forces the retrieval.
+##
+## This script tries to retrieve the rfcs in question from configurable sources.
+## First it tries to find them in the paths found in the environment variable
+## "RFCPATHS" (by default "/usr/share/doc/rfc", multiple paths separated by
+## colons), then it tries to retrieve them from selected URLs found in
+## "RFCSOURCES" (by default "http://www.rfc-editor.org/rfc/", multiple sources
+## separated by spaces).
+## The RFCs retrieved from a RFCSOURCES are either permanently stored in the
+## first writable directory in RFCPATHS or written to the "TMPDIR" (by default
+## "/tmp") and deleted after the used viewer has terminated.
+## On the local system the comma separated extensions in RFCEXTENSIONS are
+## tried otherwise the first extension found in RFCEXTENSIONS is tried for
+## remote retrieval.
+##
+##--- Set some traps
+trap 'test -n "$files2del" && rm -f $files2del' INT QUIT ABRT KILL TERM EXIT
+##--- Some presets which might be overwritten
+: ${RFCPATHS:="@LOCALSTATEDIR@/cache/rfcs:@DATADIR@/doc/rfc"}
+: ${RFCEXTENSIONS:=".txt.gz .txt .html"}
+: ${RFCSOURCES:="http://www.rfc-editor.org/rfc/ ftp://ftp.isi.edu/in-notes/"}
+: ${TMPDIR:="/tmp"}
+##--- Some special variables
+SCNAME="${0##*/}"
+RFCSFOUND=''
+rfcpaths="`echo "$RFCPATHS" | tr : " "`/"
+files2del=''
+prefix='rfc'
+##--- Option switches
+opt_force=''
+##--- Some functions
+function findrfc () {
+	# usage: findrfc rfcname
+	# where "rfcname" is the name of one RFC you want to retrieve.
+	# Returns a string which is the path and name of the locally found
+	# rfc and return code zero or nothing a the return code ten. It
+	# processes the global variable "rfcpaths" and "RFCEXTENSIONS".
+	local rfcname="$1" fullname='' retval='10'
+	# Process all the paths in "RFCPATHS".
+	for trypath in $rfcpaths; do
+		# And try them with all the extensions in "RFCEXTENSIONS".
+		for ext in $RFCEXTENSIONS; do
+			# Construct the filename to test for.
+			fullname="${trypath}/${rfcname}${ext}"
+			# If the constructed name exists print this name, set
+			# the return code to zero and end the two for loops.
+			test -r $fullname && \
+				{ echo "$fullname"; retval='0'; break 2; }
+		done
+	done
+
+	return $retval
+}
+function findwritable () {
+	# usage: findwritable
+	# No arguments are processed. Returns either the first path in RFCPATHS
+	# which is writable for the current UID and return code zero or nothing
+	# and return code ten.
+	local retval='10' 
+	# Process all the seperate paths in RFCPATHS.
+	for pathname in $rfcpaths; do
+		# If we find a path which is writable print this one, set
+		# return code to zero and break the current for loop.
+		test -w $pathname && { echo "$pathname"; retval='0'; break; }
+	done
+
+	return $retval
+}
+function makename () {
+	local retval='10' rfcname="$1" varname="$2" ext="$3" writabledir=''
+	local constructedname=''
+	if writabledir="`findwritable`"; then
+		echo "$varname='${writabledir}/${rfcname}${ext}'"
+	else
+		constructedname="${TMPDIR}/${rfcname}.${$}${ext}"
+		echo "files2del='${files2del:+$files2del }$constructedname'; $varname='$constructedname'"
+	fi
+}
+function retrieverfc () {
+	local retval='10' rfcname="$1" varname="$2"
+	local localname=''; extension=''
+	for resource in $RFCSOURCES; do
+		for extension in $RFCEXTENSIONS; do
+			eval `makename $rfcname localname $extension`
+			if curl -s -f -o $localname "${resource}${rfcname}${extension}"; then
+				echo "files2del='${files2del}'; $varname='$localname'"
+				retval='0'
+				break 2
+			fi
+		done
+	done
+
+	return $retval
+}
+##--- Main program
+process_opts="1"
+while [ -n "$process_opts" ]; do
+	case "$1" in
+		-f|--force)
+			opt_force='1'; shift;;
+		--)
+			process_opts=''; shift;;
+		-*)
+			echo "$SCNAME: Unknown option '$1'"
+			exit 10;;
+		*)
+			process_opts='';;
+	esac
+done
+for rfcname in $*; do
+	case "$rfcname" in
+		[0-9]*)
+			rfcname="${prefix}$rfcname";;
+		*)
+			:
+			;;
+	esac
+	found="`findrfc $rfcname`"
+	if [ $? -eq 0 -a -z "$opt_force" ]; then
+		RFCSFOUND="${RFCSFOUND:+$RFCSFOUND }$found"
+	else
+		if eval `retrieverfc $rfcname found`; then
+			RFCSFOUND="${RFCSFOUND:+$RFCSFOUND }$found"
+		else
+			echo "$SCNAME: rfc '${rfcname}' not found" >&2
+		fi
+	fi
+done
+
+$PAGER $RFCSFOUND

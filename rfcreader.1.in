@@ -1,0 +1,59 @@
+.TH @PACKAGENAME@ 1 08/15/2008 aeon.icebear.org "rfc retriever and viewer"
+
+.SH NAME
+@PACKAGENAME@ \- An RFC document retriever and viewer
+
+.SH SYNOPSIS
+.B @PACKAGENAME@
+.RB [\| \-f \|]
+.IR rfcnum
+.RB  | 
+.IR rfcname
+.RB " ... "
+
+.SH DESCRIPTION
+.B @PACKAGENAME@
+is a script which starts a pager with localy available RFC documents. If the
+requested document is not localy available it is fetched via FTP or HTTP from
+configurable sources. This way the requester doesn't need to care about the
+sources for the RFC documents.
+
+.SH OPTIONS
+.TP
+.BI \-\-force
+force the retrieval of the requested RFCs from external sources. Usefull
+for the \*(lqrfc-index\*(rq document.
+.TP
+.IR rfcnum
+.RB  |
+.IR rfcname
+.RB  " ..."
+either just the rfc number for the requested document or the full rfc name
+(like \*(lqrfc-index\*(rq or \*(lqrfc2822\*(rq).
+
+.SH ENVIRONMENT
+.TP
+.B RFCPATHS
+Local directories to search for requested RFCs. The first writable directory
+is the one where retrieved RFCs are written to.
+.TP
+.B RFCEXTENSIONS
+Space separated list of extension to the given document name to deal with.
+Default is \*(lq.txt .txtgz .html\*(rq.
+.TP
+.B RFCSOURCES
+Space separated list of FTP and HTTP sources for requested RFC documents.
+
+.SH BUGS
+None known yet.
+
+.SH AUTHOR
+.P
+Copyright (C) 2006-2008
+by
+.UR mailto:@EMAIL@
+@AUTHOR@
+.UE
+
+.SH SEE ALSO
+.BR curl (1).

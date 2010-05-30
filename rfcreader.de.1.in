@@ -1,0 +1,61 @@
+.TH @PACKAGENAME@ 1 07/04/2007 aeon.icebear.org "RFC-Beschaffer und -Anzeiger"
+
+.SH NAME
+@PACKAGENAME@ \- Ein RFC-Dokument-Beschaffer und -Anzeiger
+
+.SH SYNOPSIS
+.B @PACKAGENAME@
+.RB [\| \-f \|]
+.IR rfcnum
+.RB  | 
+.IR rfcname
+.RB " ... "
+
+.SH DESCRIPTION
+.B @PACKAGENAME@
+ist ein Script das einen Pager mit lokal verfügbaren RFC-Dokumenten startet.
+Wenn das spezifizierte Dokument nicht lokal verfügbar ist wird es via FTP
+oder HTTP von konfigurierbaren Quellen geholt. Auf diese Weise muss der
+nachfragende User sich nicht darum kümmern, woher das gewünschte RFC-Dokument
+kommt.
+
+.SH OPTIONS
+.TP
+.BI \-\-force
+erzwingt das holen des gewünschten RFCs von einer externen Quelle. Hilfreich
+für das \*(lqrfc-index\*(rq-Dokument.
+.TP
+.IR rfcnum
+.RB  |
+.IR rfcname
+.RB  " ..."
+entweder einfach die RFC-Nummer für das gewünschte Dokument oder der volle
+RFC-Name (wie zum Beispiel \*(lqrfc-index\*(rq oder \*(lqrfc2822\*(rq).
+
+.SH ENVIRONMENT
+.TP
+.B RFCPATHS
+Lokale Verzeichnisse in denen nach spezifizierten RFCs gesucht wird. In das
+erste beschreibbare Verzeichnis werden extern gefundene RFCs herunter geladen.
+.TP
+.B RFCEXTENSIONS
+Leerzeichen-separierte Liste von Dateinamen-Erweiterungen für das spezifizierte
+Dokument. Standard ist \*(lq.txt .txtgz .html\*(rq.
+.TP
+.B RFCSOURCES
+Leerzeichen-separierte Liste von FTP- und HTTP-Quellen für die spezifizierten
+RFC-Dokumente.
+
+.SH BUGS
+Bisher keine bekannten.
+
+.SH AUTHOR
+.P
+Copyright (C) 2006-2008
+by
+.UR mailto:@EMAIL@
+@AUTHOR@
+.UE
+
+.SH SEE ALSO
+.BR curl (1).
