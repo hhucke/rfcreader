@@ -1,3 +1,4 @@
+# Comment
 packagename:=@PACKAGENAME@
 prefix:=@PREFIX@
 exec_prefix:=@EXECPREFIX@
