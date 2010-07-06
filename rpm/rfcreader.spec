@@ -38,7 +38,23 @@ RFCs.
 #%patch -p1
 
 %build
-%configure --version=%{ver}.%{rel}
+%__make \
+	DESTDIR=%{?buildroot:%{buildroot}} \
+	prefix=%{_prefix} \
+	exec_prefix=%{_exec_prefix} \
+	bindir=%{_bindir} \
+	sbindir=%{_sbindir} \
+	sysconfdir=%{_sysconfdir} \
+	datadir=%{_datadir} \
+	includedir=%{_includedir} \
+	libdir=%{_libdir} \
+	libexecdir=%{_libexecdir} \
+	localstatedir=%{_localstatedir} \
+	sharedstatedir=%{_sharedstatedir} \
+	mandir=%{_mandir} \
+	infodir=%{_infodir} \
+	version=%{ver} \
+	revision=%{rel}
 
 %install
 %makeinstall

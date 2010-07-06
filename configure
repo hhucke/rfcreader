@@ -1,6 +1,6 @@
 #!/bin/bash
 ##
-## configure script to configure the package <packagename>
+## configure script to configure the package hookwall
 ##
 SED="/usr/bin/sed"
 MONTHYEAR="`date +'%B %Y'`"
@@ -12,54 +12,70 @@ LIBEXECDIR=""
 MANDIR=""
 VERSION=""
 AUTHOR=""
-DIRECTORY="./"
+
+files=''
 
 while [ $# -ge 1 ]; do
 	case $1 in
-		-d|--directory)
-			DIRECTORY="$2"; shift;;
 		--packagename=*)
-			PACKAGENAME="${1##--packagename=}";;
+			PACKAGENAME="${1##--packagename=}"; shift;;
 		--version=*)
-			VERSION="${1##--version=}";;
+			VERSION="${1##--version=}"; shift;;
+		--revision=*)
+			REVISION="${1##--revision=}"; shift;;
 		--author=*)
-			AUTHOR="${1##--author=}";;
-		--email=*)
-			EMAIL="${1##--email=}";;
+			AUTHOR="${1##--author=}"; shift;;
 		--prefix=*)
-			PREFIX="${1##--prefix=}";;
+			PREFIX="${1##--prefix=}"; shift;;
 		--exec-prefix=*)
-			EXECPREFIX="${1##--exec-prefix=}";;
+			EXECPREFIX="${1##--exec-prefix=}"; shift;;
 		--bindir=*)
-			BINDIR="${1##--bindir=}";;
+			BINDIR="${1##--bindir=}"; shift;;
 		--sbindir=*)
-			SBINDIR="${1##--sbindir=}";;
+			SBINDIR="${1##--sbindir=}"; shift;;
 		--sysconfdir=*)
-			SYSCONFDIR="${1##--sysconfdir=}";;
+			SYSCONFDIR="${1##--sysconfdir=}"; shift;;
 		--datadir=*)
-			DATADIR="${1##--datadir=}";;
+			DATADIR="${1##--datadir=}"; shift;;
 		--includedir=*)
-			INCLUDEDIR="${1##--includedir=}";;
+			INCLUDEDIR="${1##--includedir=}"; shift;;
 		--libdir=*)
-			LIBDIR="${1##--libdir=}";;
+			LIBDIR="${1##--libdir=}"; shift;;
 		--libexecdir=*)
-			LIBEXECDIR="${1##--libexecdir=}";;
+			LIBEXECDIR="${1##--libexecdir=}"; shift;;
 		--localstatedir=*)
-			LOCALSTATEDIR="${1##--localstatedir=}";;
+			LOCALSTATEDIR="${1##--localstatedir=}"; shift;;
 		--sharedstatedir=*)
-			SHAREDSTATEDIR="${1##--sharedstatedir=}";;
+			SHAREDSTATEDIR="${1##--sharedstatedir=}"; shift;;
 		--mandir=*)
-			MANDIR="${1##--mandir=}";;
+			MANDIR="${1##--mandir=}"; shift;;
 		--infodir=*)
-			INFODIR="${1##--infodir=}";;
-	esac
-	shift
+			INFODIR="${1##--infodir=}"; shift;;
+		--build=*)
+			BUILDARCH="${1##--build=}"; shift;;
+		--target=*)
+			TARGETARCH="${1##--target=}"; shift;;
+		--host=*)
+			HOSTARCH="${1##--host=}"; shift;;
+		--program-prefix=*)
+			PROGRAMPREFIX="${1##--program-prefix=}"; shift;;
+		--*)
+			echo "Unknown option: $1"; shift;;
+		--)
+			shift; files="$@"; shift $#;;
+		*)
+			files="$@"; shift $#;;
+	esac;
 done;
 
+if [ -z "$files" ]; then
+	files=*.in
+fi
+
 : ${PACKAGENAME:=rfcreader}
-: ${VERSION:=0.0.1}
-: ${AUTHOR:=Henning Hucke}
-: ${EMAIL:='h_hucke+rfc@aeon.icebear.org'}
+: ${VERSION:=1.0}
+: ${REVISION:=0}
+: ${AUTHOR:=h_hucke}
 : ${PREFIX:=/usr}
 : ${EXECPREFIX:=$PREFIX}
 : ${BINDIR:=$EXECPREFIX/bin}
@@ -73,26 +89,33 @@ done;
 : ${SHAREDSTATEDIR:=$PREFIX/com}
 : ${MANDIR:=$DATADIR/man}
 : ${INFODIR:=$DATADIR/info}
+: ${BUILDARCH:=x86_64-suse-linux-gnu}
+: ${TARGETARCH:=linux-suse-x86_64-gnu}
+: ${PROGRAMPREFIX:=}
 
-find $DIRECTORY -type f -name "*.in" | \
-{	while read file; do
-		sed -e "s%@PACKAGENAME@%${PACKAGENAME}%g;\
-			s%@MONTHYEAR@%${MONTHYEAR}%g;\
-			s%@VERSION@%${VERSION}%g;\
-			s%@AUTHOR@%${AUTHOR}%g;\
-			s%@EMAIL@%${EMAIL}%g;\
-			s%@PREFIX@%${PREFIX}%g;\
-			s%@EXECPREFIX@%${EXECPREFIX}%g;\
-			s%@BINDIR@%${BINDIR}%g;\
-			s%@SBINDIR@%${SBINDIR}%g;\
-			s%@SYSCONFDIR@%${SYSCONFDIR}%g;\
-			s%@DATADIR@%${DATADIR}%g;\
-			s%@INCLUDEDIR@%${INCLUDEDIR}%g;\
-			s%@LIBDIR@%${LIBDIR}%g;\
-			s%@LIBEXECDIR@%${LIBEXECDIR}%g;\
-			s%@LOCALSTATEDIR@%${LOCALSTATEDIR}%g;\
-			s%@SHAREDSTATEDIR@%${SHAREDSTATEDIR}%g;\
-			s%@MANDIR@%${MANDIR}%g;\
-			s%@INFODIR@%${INFODIR}%g" <${file} >${file%%.in}
-	done
-}
+
+for file in $files; do
+	sed -e "s%@PACKAGENAME@%${PACKAGENAME}%g;\
+		s%@MONTHYEAR@%${MONTHYEAR}%g;\
+		s%@VERSION@%${VERSION}%g;\
+		s%@REVISION@%${REVISION}%g;\
+		s%@AUTHOR@%${AUTHOR}%g;\
+		s%@PREFIX@%${PREFIX}%g;\
+		s%@EXECPREFIX@%${EXECPREFIX}%g;\
+		s%@BINDIR@%${BINDIR}%g;\
+		s%@SBINDIR@%${SBINDIR}%g;\
+		s%@SYSCONFDIR@%${SYSCONFDIR}%g;\
+		s%@DATADIR@%${DATADIR}%g;\
+		s%@INCLUDEDIR@%${INCLUDEDIR}%g;\
+		s%@LIBDIR@%${LIBDIR}%g;\
+		s%@LIBEXECDIR@%${LIBEXECDIR}%g;\
+		s%@LOCALSTATEDIR@%${LOCALSTATEDIR}%g;\
+		s%@SHAREDSTATEDIR@%${SHAREDSTATEDIR}%g;\
+		s%@MANDIR@%${MANDIR}%g;\
+		s%@INFODIR@%${INFODIR}%g;\
+		s%@BUILDARCH@%${BUILDARCH}%g;\
+		s%@TARGETARCH@%${TARGETARCH}%g;\
+		s%@HOSTARCH@%${HOSTARCH}%g;\
+		s%@PROGRAMPREFIX@%${PROGRAMPREFIX}%g" <${file} >${file%%.in}
+	chmod --reference=${file} ${file%%.in}
+done
