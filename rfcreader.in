@@ -2,14 +2,15 @@
 ##
 ## vim:foldmethod=marker:nowrap:
 ##
-## usage: @PACKAGENAME@ [-f] rfcnum|rfcname [rfcnum|rfcname ...]
-##
+##--- Help
+## usage: SCNAME [-f] rfcnum|rfcname [rfcnum|rfcname ...]
+## 
 ## where	"rfcnum"	is the numerical part of the rfc you want to
-##				see,
-##		"rfcname"	is a name if a rfc file (for instance
-##				"rfc-index") and
-##		"-f"		forces the retrieval.
-##
+## 				see,
+## 		"rfcname"	is a name if a rfc file (for instance
+## 				"rfc-index") and
+## 		"-f"		forces the retrieval.
+## 
 ## This script tries to retrieve the rfcs in question from configurable sources.
 ## First it tries to find them in the paths found in the environment variable
 ## "RFCPATHS" (by default "/usr/share/doc/rfc", multiple paths separated by
@@ -22,6 +23,7 @@
 ## On the local system the comma separated extensions in RFCEXTENSIONS are
 ## tried otherwise the first extension found in RFCEXTENSIONS is tried for
 ## remote retrieval.
+##--- Help end
 ##
 ##--- Set some traps
 trap 'test -n "$files2del" && rm -f $files2del' INT QUIT ABRT KILL TERM EXIT
@@ -38,7 +40,11 @@ files2del=''
 prefix='rfc'
 ##--- Option switches
 opt_force=''
+opt_help=''
 ##--- Some functions
+function help () {
+      sed '/^##--- Help$/,/^##--- Help end$/ s/^## //;1,/^##--- Help$/ d;/^##--- Help end$/,$ d' < $0 | m4 -D SCNAME="$SCNAME"
+}
 function findrfc () {
 	# usage: findrfc rfcname
 	# where "rfcname" is the name of one RFC you want to retrieve.
@@ -107,16 +113,25 @@ process_opts="1"
 while [ -n "$process_opts" ]; do
 	case "$1" in
 		-f|--force)
-			opt_force='1'; shift;;
+			opt_force='1';;
+		--help|-h)
+			opt_help='1';;
 		--)
-			process_opts=''; shift;;
+			process_opts='';;
 		-*)
 			echo "$SCNAME: Unknown option '$1'"
 			exit 10;;
 		*)
 			process_opts='';;
 	esac
+	shift
 done
+
+if [ -n "$opt_help" ]; then
+	help
+	exit 0
+fi
+
 for rfcname in $*; do
 	case "$rfcname" in
 		[0-9]*)

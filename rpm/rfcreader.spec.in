@@ -2,8 +2,8 @@
 # vim:filetype=spec:nowrap:
 #
 
-%define	ver		0.0
-%define	rel		1
+%define	ver		@VERSION@
+%define	rel		@REVISION@
 
 #Vendor:		Henning Hucke
 #Packager:	Henning Hucke <h_hucke@aeon.icebear.org>
@@ -14,7 +14,7 @@ License:	GPL
 Summary:	Script to transparently retrieve RFCs for reading.
 Group:		Unknown
 Source:		%{name}-%{ver}-%{rel}.tgz
-#URL:		<information resource>
+URL:		mailto:h_hucke+@PACKAGENAME@@aeon.icebear.org
 BuildRoot:	%{_tmppath}/%{name}-%{ver}-%{rel}-root
 #Patch:		<optional patches>
 #Prefix:	/usr
@@ -65,6 +65,10 @@ RFCs.
 %__rm -rf %{?buildroot:%{buildroot}}
 
 %changelog
-* Fri Aug 15 2008 - Henning Hucke <h_hucke+rfc@aeon.icebear.org>
+* Tue Jul 06 2010 - Henning Hucke <h_hucke+@PACKAGENAME@@aeon.icebear.org>
+
+- Switched to a more advanced build scheme.
+
+* Fri Aug 15 2008 - Henning Hucke <h_hucke+@PACKAGENAME@@aeon.icebear.org>
 
 - Initial Version of this package.
