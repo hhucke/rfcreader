@@ -6,7 +6,7 @@
 %define	rel		@REVISION@
 
 #Vendor:		Henning Hucke
-#Packager:	Henning Hucke <h_hucke@aeon.icebear.org>
+Packager:	Henning Hucke <h_hucke+@PACKAGENAME@@aeon.icebear.org>
 Name:		rfcreader
 Version:	%{ver}
 Release:	%{rel}
@@ -14,7 +14,6 @@ License:	GPL
 Summary:	Script to transparently retrieve RFCs for reading.
 Group:		Unknown
 Source:		%{name}-%{ver}-%{rel}.tgz
-URL:		mailto:h_hucke+@PACKAGENAME@@aeon.icebear.org
 BuildRoot:	%{_tmppath}/%{name}-%{ver}-%{rel}-root
 #Patch:		<optional patches>
 #Prefix:	/usr
