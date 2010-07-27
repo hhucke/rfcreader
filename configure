@@ -15,14 +15,18 @@ AUTHOR=""
 
 files=''
 
+if [ -r version.info ]; then
+	source version.info
+fi
+
 while [ $# -ge 1 ]; do
 	case $1 in
 		--packagename=*)
 			PACKAGENAME="${1##--packagename=}"; shift;;
 		--version=*)
-			VERSION="${1##--version=}"; shift;;
+			_VERSION="${1##--version=}"; shift;;
 		--revision=*)
-			REVISION="${1##--revision=}"; shift;;
+			_REVISION="${1##--revision=}"; shift;;
 		--author=*)
 			AUTHOR="${1##--author=}"; shift;;
 		--prefix=*)
@@ -73,8 +77,10 @@ if [ -z "$files" ]; then
 fi
 
 : ${PACKAGENAME:=rfcreader}
-: ${VERSION:=1.0}
+: ${VERSION:=0.0}
 : ${REVISION:=0}
+: ${_VERSION:=${VERSION}}
+: ${_REVISION:=${REVISION}}
 : ${AUTHOR:=h_hucke}
 : ${PREFIX:=/usr}
 : ${EXECPREFIX:=$PREFIX}
@@ -93,6 +99,16 @@ fi
 : ${TARGETARCH:=linux-suse-x86_64-gnu}
 : ${PROGRAMPREFIX:=}
 
+if [ -w version.info -a \
+	"${_VERSION}" != "${VERSION}" -a \
+	"${_REVISION}" != "${REVISION}" ]; then
+	cat <<-EOD >version.info
+		VERSION="${_VERSION}"
+		REVISION="${_REVISION}"
+	EOD
+	VERSION="${_VERSION}"; unset _VERSION
+	REVISION="${_REVISION}"; unset _REVISION
+fi
 
 for file in $files; do
 	sed -e "s%@PACKAGENAME@%${PACKAGENAME}%g;\

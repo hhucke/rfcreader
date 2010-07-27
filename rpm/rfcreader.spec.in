@@ -37,6 +37,7 @@ RFCs.
 #%patch -p1
 
 %build
+%configure
 %__make \
 	DESTDIR=%{?buildroot:%{buildroot}} \
 	prefix=%{_prefix} \

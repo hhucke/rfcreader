@@ -19,24 +19,34 @@ install:=install
 link:=ln -sfn
 
 rpms:=$(patsubst %.in,%,$(wildcard rpm/*.in))
+rpmins:=$(wildcard rpm/*.in)
 debs:=$(patsubst %.in,%,$(wildcard debian/*.in))
+debins:=$(wildcard debian/*.in)
 others:=$(patsubst %.in,%,$(wildcard *.in))
+otherins:=$(wildcard *.in)
 all:=$(rpms) $(debs) $(others)
+allins:=$(rpmins) $(debins) $(otherins)
 allfiles:=$(all) configure makefile
+allinfiles:=$(allins) configure makefile
 
-.PHONY: all
-all: $(all)
+.PHONY: all version.info
+build:
+	@echo "Sorry. Nothing to do to build this sofware"
 
 $(all): %: %.in
-	./configure --sysconfdir=/etc $<
+	./configure --sysconfdir=/etc --localstatedir=/var $<
+
+makefile: version.info
+
+rpm/@PACKAGENAME@.spec: version.info
 
 .PHONY: install
 install:
 	@if [ -z "$(debianpackage)" ]; then \
-		install -d -m 1777 $(localstatedir)/cache/rfcs; \
-		install -D $(packagename) $(bindir)/$(packagename); \
-		install -D -m 0644 $(packagename).1 $(mandir)/man1/$(packagename).1; \
-		install -D -m 0644 $(packagename).de.1 $(mandir)/de/man1/$(packagename).1; \
+		install -d -m 1777 $(DESTDIR)/$(localstatedir)/cache/rfcs; \
+		install -D $(packagename) $(DESTDIR)/$(bindir)/$(packagename); \
+		install -D -m 0644 $(packagename).1 $(DESTDIR)/$(mandir)/man1/$(packagename).1; \
+		install -D -m 0644 $(packagename).de.1 $(DESTDIR)/$(mandir)/de/man1/$(packagename).1; \
 	else \
 		$(install) categories $(sysconfdir)/$(packagename)/; \
 		$(install) $(packagename) $(sbindir)/; \
@@ -48,7 +58,7 @@ install:
 clean:
 	rm -fv $(filter-out makefile,$(all)) $(packagename)-$(version)-$(revision).tgz
 
-rpm: $(packagename)-$(version)-$(revision).tgz
+rpm: $(packagename)-$(version)-$(revision).tgz rpm/@PACKAGENAME@.spec
 	rpmbuild --clean --target=noarch-aeon-linux -ta $(packagename)-$(version)-$(revision).tgz
 	touch rpm
 
@@ -59,5 +69,5 @@ debian: $(allfiles)
 .PHONY: tarfile
 tarfile: $(packagename)-$(version)-$(revision).tgz
 
-$(packagename)-$(version)-$(revision).tgz: $(allfiles)
-	tar zcCf ../ $(packagename)-$(version)-$(revision).tgz --exclude=".svn*" --exclude="$(packagename)-$(version)-$(revision).tgz" $(addprefix $(packagename)/, $(allfiles))
+$(packagename)-$(version)-$(revision).tgz: $(allinfiles) rpm/@PACKAGENAME@.spec
+	tar zcCf ../ $(packagename)-$(version)-$(revision).tgz --exclude=".svn*" --exclude="$(packagename)-$(version)-$(revision).tgz" $(addprefix $(packagename)/, $(allinfiles) rpm/@PACKAGENAME@.spec)
