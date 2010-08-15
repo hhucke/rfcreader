@@ -14,7 +14,7 @@ sharedstatedir:=/usr/com
 mandir:=/usr/share/man
 infodir:=/usr/local/info:/usr/share/info:/usr/info
 version:=1.0
-revision:=0
+revision:=1
 install:=install
 link:=ln -sfn
 
@@ -31,7 +31,7 @@ allinfiles:=$(allins) configure makefile
 
 .PHONY: all version.info
 build:
-	@echo "Sorry. Nothing to do to build thism sofware"
+	@echo "Sorry. Nothing to do to build this sofware"
 
 $(all): %: %.in
 	./configure --sysconfdir=/etc --localstatedir=/var $<

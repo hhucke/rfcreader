@@ -65,6 +65,10 @@ RFCs.
 %__rm -rf %{?buildroot:%{buildroot}}
 
 %changelog
+* Thu Aug 12 2010 - Henning Hucke <h_hucke+@PACKAGENAME@@aeon.icebear.org>
+
+- Corrected serious error which prevented option processing.
+
 * Tue Jul 06 2010 - Henning Hucke <h_hucke+@PACKAGENAME@@aeon.icebear.org>
 
 - Switched to a more advanced build scheme.

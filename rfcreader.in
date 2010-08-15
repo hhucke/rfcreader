@@ -124,7 +124,7 @@ while [ -n "$process_opts" ]; do
 		*)
 			process_opts='';;
 	esac
-	shift
+	test -n "$process_opts" && shift
 done
 
 if [ -n "$opt_help" ]; then
