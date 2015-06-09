@@ -1,20 +1,27 @@
+#!/usr/bin/make -j
+# vim:nowrap:
+##
+## makefile
+##
 DESTDIR:=
-packagename:=rfcreader
-prefix:=/usr
-exec_prefix:=/usr
-bindir:=/usr/bin
-sbindir:=/usr/sbin
-sysconfdir:=/etc
-datadir:=/usr/share
-includedir:=/usr/include
-libdir:=/usr/lib
-libexecdir:=/usr/libexec
-localstatedir:=/var
-sharedstatedir:=/usr/com
-mandir:=/usr/share/man
-infodir:=/usr/local/info:/usr/share/info:/usr/info
-version:=1.0
-revision:=1
+PACKAGENAME:=rfcreader
+PREFIX:=/usr
+EXEC_PREFIX:=$(PREFIX)
+BINDIR:=$(EXEC_PREFIX)/bin
+SBINDIR:=$(EXEC_PREFIX)/sbin
+SYSCONFDIR:=/etc
+DATADIR:=$(PREFIX)/share
+INCLUDEDIR:=$(PREFIX)/include
+LIBDIR:=$(PREFIX)/lib
+LIBEXECDIR:=$(EXEC_PREFIX)/libexec
+LOCALSTATEDIR:=/var
+SHAREDSTATEDIR:=$(PREFIX)/com
+MANDIR:=$(DATADIR)/man
+INFODIR:=$(DATADIR)/info
+DIRBASE:=$(PACKAGENAME)
+
+include $(PACKAGENAME).ver
+
 install:=install
 link:=ln -sfn
 
@@ -29,45 +36,40 @@ allins:=$(rpmins) $(debins) $(otherins)
 allfiles:=$(all) configure makefile
 allinfiles:=$(allins) configure makefile
 
-.PHONY: all version.info
+.PHONY: all $(PACKAGENAME).ver
+all: $(all)
+
 build:
 	@echo "Sorry. Nothing to do to build this sofware"
 
 $(all): %: %.in
-	./configure --sysconfdir=/etc --localstatedir=/var $<
+	./configure $<
 
-makefile: version.info
+rpm/$(PACKAGENAME).spec: rpm/$(PACKAGENAME).spec.in $(PACKAGENAME).ver
 
-rpm/rfcreader.spec: version.info
-
-.PHONY: install
+.PHONY: install install-$(PACKAGENAME)
+install-$(PACKAGENAME):
 install:
-	@if [ -z "$(debianpackage)" ]; then \
-		install -d -m 1777 $(DESTDIR)/$(localstatedir)/cache/rfcs; \
-		install -D $(packagename) $(DESTDIR)/$(bindir)/$(packagename); \
-		install -D -m 0644 $(packagename).1 $(DESTDIR)/$(mandir)/man1/$(packagename).1; \
-		install -D -m 0644 $(packagename).de.1 $(DESTDIR)/$(mandir)/de/man1/$(packagename).1; \
-	else \
-		$(install) categories $(sysconfdir)/$(packagename)/; \
-		$(install) $(packagename) $(sbindir)/; \
-		$(link) ./$(packagename) $(sbindir)/update-blacklist; \
-		$(link) ./$(packagename) $(sbindir)/blacklist-tool; \
-	fi
+	install -d -m 1777 $(DESTDIR)/$(LOCALSTATEDIR)/cache/rfcs; \
+	install -D $(PACKAGENAME) $(DESTDIR)/$(BINDIR)/$(PACKAGENAME); \
+	install -D -m 0644 $(PACKAGENAME).1 $(DESTDIR)/$(MANDIR)/man1/$(PACKAGENAME).1; \
+	install -D -m 0644 $(PACKAGENAME).de.1 $(DESTDIR)/$(MANDIR)/de/man1/$(PACKAGENAME).1; \
 
 .PHONY: clean
 clean:
-	rm -fv $(filter-out makefile,$(all)) $(packagename)-$(version)-$(revision).tgz
+	rm -fv $(filter-out makefile,$(all)) $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz
 
-rpm: $(packagename)-$(version)-$(revision).tgz rpm/rfcreader.spec
-	rpmbuild --clean --target=noarch-aeon-linux -ta $(packagename)-$(version)-$(revision).tgz
+rpm: $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz rpm/$(PACKAGENAME).spec
+	rpmbuild --clean --target=noarch-aeon-linux -ta $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz
 	touch rpm
 
 debian: $(allfiles)
-	dpkg-buildpackage -rsudo -d -b -us -uc -tc -I'.svn*'
+	debuild -us -uc -tc -I'.git*'
 	touch debian
 
 .PHONY: tarfile
-tarfile: $(packagename)-$(version)-$(revision).tgz
+tarfile: $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz
 
-$(packagename)-$(version)-$(revision).tgz: $(allinfiles) rpm/rfcreader.spec
-	tar zcCf ../ $(packagename)-$(version)-$(revision).tgz --exclude=".svn*" --exclude="$(packagename)-$(version)-$(revision).tgz" $(addprefix $(packagename)/, $(allinfiles) rpm/rfcreader.spec)
+$(PACKAGENAME)-$(VERSION)-$(REVISION).tgz: $(allinfiles) rpm/$(PACKAGENAME).spec
+	tar zcCf ../ $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz --exclude=".git*" --exclude="$(PACKAGENAME)-$(VERSION)-$(REVISION).tgz" $(addprefix $(PACKAGENAME)/, $(allinfiles) rpm/$(PACKAGENAME).spec)
+

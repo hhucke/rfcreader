@@ -3,21 +3,10 @@
 ## configure script to configure the package hookwall
 ##
 SED="/usr/bin/sed"
-MONTHYEAR="`date +'%B %Y'`"
-PACKAGENAME=""
-PREFIX=""
-EXECPREFIX=""
-SBINDIR=""
-LIBEXECDIR=""
-MANDIR=""
-VERSION=""
-AUTHOR=""
+MONTHYEAR="$(date +'%B %Y')"
+MANPAGEDATE="$(date +'%d/%m/%Y')"
 
 files=''
-
-if [ -r version.info ]; then
-	source version.info
-fi
 
 while [ $# -ge 1 ]; do
 	case $1 in
@@ -29,6 +18,8 @@ while [ $# -ge 1 ]; do
 			_REVISION="${1##--revision=}"; shift;;
 		--author=*)
 			AUTHOR="${1##--author=}"; shift;;
+		--emailaddr=*)
+			EMAILADDR="${1##--emailaddr=}"; shift;;
 		--prefix=*)
 			PREFIX="${1##--prefix=}"; shift;;
 		--exec-prefix=*)
@@ -73,15 +64,22 @@ while [ $# -ge 1 ]; do
 done;
 
 if [ -z "$files" ]; then
-	files=*.in
+	files="`find ./ \( -type f -or -type l \) -name "*.in" -print`"
 fi
 
-: ${PACKAGENAME:=rfcreader}
+: ${USER:=nobody}
+: ${MAILDOMAIN:=icebear.org}
+: ${AUTONOMOUS_SYSTEM:=Aeon}
+: ${SITENAME:=${AUTONOMOUS_SYSTEM}}
+: ${DIRBASENAME:="${PWD##*/}"}
+
+: ${PACKAGENAME:=${DIRBASENAME}}
 : ${VERSION:=0.0}
 : ${REVISION:=0}
 : ${_VERSION:=${VERSION}}
 : ${_REVISION:=${REVISION}}
-: ${AUTHOR:=h_hucke}
+: ${AUTHOR:=$(getent passwd $USER | cut -d : -f 5)}
+: ${EMAILADDR:=${USER}+project.${PACKAGENAME}@${MAILDOMAIN}}
 : ${PREFIX:=/usr}
 : ${EXECPREFIX:=$PREFIX}
 : ${BINDIR:=$EXECPREFIX/bin}
@@ -97,12 +95,16 @@ fi
 : ${INFODIR:=$DATADIR/info}
 : ${BUILDARCH:=x86_64-suse-linux-gnu}
 : ${TARGETARCH:=linux-suse-x86_64-gnu}
-: ${PROGRAMPREFIX:=}
+: ${PROGRAMPREFIX:=${PACKAGENAME}}
 
-if [ -w version.info -a \
-	"${_VERSION}" != "${VERSION}" -a \
+if [ -r ${PACKAGENAME}.ver ]; then
+	source ${PACKAGENAME}.ver
+fi
+
+if [ -w ${PACKAGENAME}.ver -a \
+	"${_VERSION}" != "${VERSION}" -o \
 	"${_REVISION}" != "${REVISION}" ]; then
-	cat <<-EOD >version.info
+	cat <<-EOD >${PACKAGENAME}.ver
 		VERSION="${_VERSION}"
 		REVISION="${_REVISION}"
 	EOD
@@ -111,11 +113,18 @@ if [ -w version.info -a \
 fi
 
 for file in $files; do
-	sed -e "s%@PACKAGENAME@%${PACKAGENAME}%g;\
+	echo 'm4_changequote(`{{{'"'"', `}}}'"'"')m4_dnl' | m4 -P - ${file} | \
+	sed -e "s%@DIRBASENAME@%${DIRBASENAME}%g;\
+		s%@MANPAGEDATE@%${MANPAGEDATE}%g;\
+		s%@MAILDOMAIN@%${MAILDOMAIN}%g;\
+		s%@AUTONOMOUS_SYSTEM@%${AUTONOMOUS_SYSTEM}%g;\
+		s%@SITENAME@%${SITENAME}%g;\
+		s%@PACKAGENAME@%${PACKAGENAME}%g;\
 		s%@MONTHYEAR@%${MONTHYEAR}%g;\
 		s%@VERSION@%${VERSION}%g;\
 		s%@REVISION@%${REVISION}%g;\
 		s%@AUTHOR@%${AUTHOR}%g;\
+		s%@EMAILADDR@%${EMAILADDR}%g;\
 		s%@PREFIX@%${PREFIX}%g;\
 		s%@EXECPREFIX@%${EXECPREFIX}%g;\
 		s%@BINDIR@%${BINDIR}%g;\
@@ -132,6 +141,7 @@ for file in $files; do
 		s%@BUILDARCH@%${BUILDARCH}%g;\
 		s%@TARGETARCH@%${TARGETARCH}%g;\
 		s%@HOSTARCH@%${HOSTARCH}%g;\
-		s%@PROGRAMPREFIX@%${PROGRAMPREFIX}%g" <${file} >${file%%.in}
+		s%@PROGRAMPREFIX@%${PROGRAMPREFIX}%g" >${file%%.in}
 	chmod --reference=${file} ${file%%.in}
 done
+
