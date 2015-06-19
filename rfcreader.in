@@ -13,7 +13,7 @@
 ## 
 ## This script tries to retrieve the rfcs in question from configurable sources.
 ## First it tries to find them in the paths found in the environment variable
-## "RFCPATHS" (by default "/usr/share/doc/rfc", multiple paths separated by
+## "RFCPATHS" (by default "/usr/share/doc/RFC/links", multiple paths separated by
 ## colons), then it tries to retrieve them from selected URLs found in
 ## "RFCSOURCES" (by default "http://www.rfc-editor.org/rfc/", multiple sources
 ## separated by spaces).
@@ -26,16 +26,17 @@
 ##--- Help end
 ##
 ##--- Set some traps
-trap 'test -n "$files2del" && rm -f $files2del' INT QUIT ABRT KILL TERM EXIT
+trap 'test -n "${files2del}" && rm -f ${files2del}' INT QUIT ABRT KILL TERM EXIT
+##--- Whats the name of this script?
+SCNAME="${0##*/}"
 ##--- Some presets which might be overwritten
-: ${RFCPATHS:="@LOCALSTATEDIR@/cache/rfcs:@DATADIR@/doc/rfc"}
+: ${RFCPATHS:="${HOME}/.cache/${SCNAME}:@LOCALSTATEDIR@/cache/rfcs:@DATADIR@/doc/RFC/links"}
 : ${RFCEXTENSIONS:=".txt.gz .txt .html"}
 : ${RFCSOURCES:="http://www.rfc-editor.org/rfc/ ftp://ftp.isi.edu/in-notes/"}
 : ${TMPDIR:="/tmp"}
 ##--- Some special variables
-SCNAME="${0##*/}"
 RFCSFOUND=''
-rfcpaths="`echo "$RFCPATHS" | tr : " "`/"
+rfcpaths="$(echo "${RFCPATHS}" | tr : " ")"
 files2del=''
 prefix='rfc'
 ##--- Option switches
@@ -43,7 +44,7 @@ opt_force=''
 opt_help=''
 ##--- Some functions
 function help () {
-      sed '/^##--- Help$/,/^##--- Help end$/ s/^## //;1,/^##--- Help$/ d;/^##--- Help end$/,$ d' < $0 | m4 -D SCNAME="$SCNAME"
+      sed '/^##--- Help$/,/^##--- Help end$/ s/^## //;1,/^##--- Help$/ d;/^##--- Help end$/,$ d' < $0 | m4 -D SCNAME="${SCNAME}"
 }
 function findrfc () {
 	# usage: findrfc rfcname
@@ -51,67 +52,69 @@ function findrfc () {
 	# Returns a string which is the path and name of the locally found
 	# rfc and return code zero or nothing a the return code ten. It
 	# processes the global variable "rfcpaths" and "RFCEXTENSIONS".
-	local rfcname="$1" fullname='' retval='10'
+	local rfcname="${1}" fullname='' retval='10'
 	# Process all the paths in "RFCPATHS".
-	for trypath in $rfcpaths; do
+	for trypath in ${rfcpaths}; do
 		# And try them with all the extensions in "RFCEXTENSIONS".
-		for ext in $RFCEXTENSIONS; do
+		for ext in ${RFCEXTENSIONS}; do
 			# Construct the filename to test for.
 			fullname="${trypath}/${rfcname}${ext}"
 			# If the constructed name exists print this name, set
 			# the return code to zero and end the two for loops.
-			test -r $fullname && \
-				{ echo "$fullname"; retval='0'; break 2; }
+			test -r ${fullname} && \
+				{ echo "${fullname}"; retval='0'; break 2; }
 		done
 	done
 
-	return $retval
+	return ${retval}
 }
 function findwritable () {
 	# usage: findwritable
-	# No arguments are processed. Returns either the first path in RFCPATHS
+	# No arguments are processed. Returns either the last path in RFCPATHS
 	# which is writable for the current UID and return code zero or nothing
 	# and return code ten.
-	local retval='10' 
+	local retval='10' result=''
 	# Process all the seperate paths in RFCPATHS.
-	for pathname in $rfcpaths; do
+	for pathname in ${rfcpaths}; do
 		# If we find a path which is writable print this one, set
 		# return code to zero and break the current for loop.
-		test -w $pathname && { echo "$pathname"; retval='0'; break; }
+		test -w ${pathname} && { result="${pathname}"; retval='0'; }
 	done
 
-	return $retval
+	echo "${result}"
+
+	return ${retval}
 }
 function makename () {
-	local retval='10' rfcname="$1" varname="$2" ext="$3" writabledir=''
+	local retval='10' rfcname="${1}" varname="${2}" ext="${3}" writabledir=''
 	local constructedname=''
 	if writabledir="`findwritable`"; then
-		echo "$varname='${writabledir}/${rfcname}${ext}'"
+		echo "${varname}='${writabledir}/${rfcname}${ext}'"
 	else
 		constructedname="${TMPDIR}/${rfcname}.${$}${ext}"
-		echo "files2del='${files2del:+$files2del }$constructedname'; $varname='$constructedname'"
+		echo "files2del='${files2del:+${files2del} }${constructedname}'; ${varname}='${constructedname}'"
 	fi
 }
 function retrieverfc () {
-	local retval='10' rfcname="$1" varname="$2"
+	local retval='10' rfcname="${1}" varname="${2}"
 	local localname=''; extension=''
-	for resource in $RFCSOURCES; do
-		for extension in $RFCEXTENSIONS; do
-			eval `makename $rfcname localname $extension`
-			if curl -s -f -o $localname "${resource}${rfcname}${extension}"; then
-				echo "files2del='${files2del}'; $varname='$localname'"
+	for resource in ${RFCSOURCES}; do
+		for extension in ${RFCEXTENSIONS}; do
+			eval `makename ${rfcname} localname ${extension}`
+			if curl -s -f -o ${localname} "${resource}${rfcname}${extension}"; then
+				echo "files2del='${files2del}'; ${varname}='${localname}'"
 				retval='0'
 				break 2
 			fi
 		done
 	done
 
-	return $retval
+	return ${retval}
 }
 ##--- Main program
 process_opts="1"
-while [ -n "$process_opts" ]; do
-	case "$1" in
+while [ -n "${process_opts}" ]; do
+	case "${1}" in
 		-f|--force)
 			opt_force='1';;
 		--help|-h)
@@ -119,7 +122,7 @@ while [ -n "$process_opts" ]; do
 		--)
 			process_opts='';;
 		-*)
-			echo "$SCNAME: Unknown option '$1'"
+			echo "$SCNAME: Unknown option '${1}'"
 			exit 10;;
 		*)
 			process_opts='';;
