@@ -136,23 +136,34 @@ if [ -n "$opt_help" ]; then
 fi
 
 for rfcname in $*; do
-	case "$rfcname" in
+	case "${rfcname}" in
 		[0-9]*)
-			rfcname="${prefix}$rfcname";;
+			rfcname="${prefix}${rfcname}";;
 		*)
 			:
 			;;
 	esac
-	found="`findrfc $rfcname`"
-	if [ $? -eq 0 -a -z "$opt_force" ]; then
-		RFCSFOUND="${RFCSFOUND:+$RFCSFOUND }$found"
+	found="`findrfc ${rfcname}`"
+	if [ $? -eq 0 -a -z "${opt_force}" ]; then
+		RFCSFOUND="${RFCSFOUND:+${RFCSFOUND} }${found}"
 	else
-		if eval `retrieverfc $rfcname found`; then
-			RFCSFOUND="${RFCSFOUND:+$RFCSFOUND }$found"
+		if eval `retrieverfc ${rfcname} found`; then
+			RFCSFOUND="${RFCSFOUND:+$RFCSFOUND }${found}"
 		else
-			echo "$SCNAME: rfc '${rfcname}' not found" >&2
+			echo "${SCNAME}: rfc '${rfcname}' not found" >&2
 		fi
 	fi
 done
 
-$PAGER $RFCSFOUND
+for rfcfile in ${RFCSFOUND}; do
+	if [ -n "${firstshown}" ]; then
+		read -ersp "--${SCNAME}-- next: ${rfcfile##*/} [ view (return) | skip (Ctrl-D) | quit (Ctrl-C) ]"
+		if [ $? -gt 0 ]; then
+			continue
+		elif [ -z "${REPLY}" ]; then
+			test "${PAGER##*/}" = "less" && PAGEROPTS="'${rfcfile##*/}', lines %lt-%lb of %L"
+			$PAGER${PAGEROPTS:+ -PM"${PAGEROPTS}"} ${rfcfile}
+		fi
+	fi
+	firstshown='1'
+done
