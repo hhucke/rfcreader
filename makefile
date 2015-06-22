@@ -64,7 +64,7 @@ rpm: $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz rpm/$(PACKAGENAME).spec
 	touch rpm
 
 debian: $(allfiles)
-	debuild -us -uc -tc -I'.git*'
+	debuild -us -uc -tc -I'.git*' -v$(VERSION).$(REVISION)
 	touch debian
 
 .PHONY: tarfile
