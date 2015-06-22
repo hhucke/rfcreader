@@ -88,7 +88,7 @@ function findwritable () {
 function makename () {
 	local retval='10' rfcname="${1}" varname="${2}" ext="${3}" writabledir=''
 	local constructedname=''
-	if writabledir="`findwritable`"; then
+	if writabledir="$(findwritable)"; then
 		echo "${varname}='${writabledir}/${rfcname}${ext}'"
 	else
 		constructedname="${TMPDIR}/${rfcname}.${$}${ext}"
@@ -100,7 +100,7 @@ function retrieverfc () {
 	local localname=''; extension=''
 	for resource in ${RFCSOURCES}; do
 		for extension in ${RFCEXTENSIONS}; do
-			eval `makename ${rfcname} localname ${extension}`
+			eval $(makename ${rfcname} localname ${extension})
 			if curl -s -f -o ${localname} "${resource}${rfcname}${extension}"; then
 				echo "files2del='${files2del}'; ${varname}='${localname}'"
 				retval='0'
@@ -143,11 +143,11 @@ for rfcname in $*; do
 			:
 			;;
 	esac
-	found="`findrfc ${rfcname}`"
+	found="$(findrfc ${rfcname})"
 	if [ $? -eq 0 -a -z "${opt_force}" ]; then
 		RFCSFOUND="${RFCSFOUND:+${RFCSFOUND} }${found}"
 	else
-		if eval `retrieverfc ${rfcname} found`; then
+		if eval $(retrieverfc ${rfcname} found); then
 			RFCSFOUND="${RFCSFOUND:+$RFCSFOUND }${found}"
 		else
 			echo "${SCNAME}: rfc '${rfcname}' not found" >&2
