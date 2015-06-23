@@ -4,7 +4,7 @@
 ##
 SED="/usr/bin/sed"
 MONTHYEAR="$(date +'%B %Y')"
-MANPAGEDATE="$(date +'%d/%m/%Y')"
+MANPAGEDATE="$(date +'%m/%d/%Y')"
 
 files=''
 
@@ -74,11 +74,7 @@ fi
 : ${DIRBASENAME:="${PWD##*/}"}
 
 : ${PACKAGENAME:=${DIRBASENAME}}
-: ${VERSION:=0.0}
-: ${REVISION:=0}
-: ${_VERSION:=${VERSION}}
-: ${_REVISION:=${REVISION}}
-: ${AUTHOR:=$(getent passwd $USER | cut -d : -f 5)}
+: ${AUTHOR:=$(getent passwd $USER | cut -d : -f 5 | cut -d , -f 1)}
 : ${EMAILADDR:=${USER}+project.${PACKAGENAME}@${MAILDOMAIN}}
 : ${PREFIX:=/usr}
 : ${EXECPREFIX:=$PREFIX}
@@ -101,12 +97,17 @@ if [ -r ${PACKAGENAME}.ver ]; then
 	source ${PACKAGENAME}.ver
 fi
 
+: ${VERSION:=0.0}
+: ${REVISION:=0}
+: ${_VERSION:=${VERSION}}
+: ${_REVISION:=${REVISION}}
+
 if [ -w ${PACKAGENAME}.ver -a \
 	"${_VERSION}" != "${VERSION}" -o \
 	"${_REVISION}" != "${REVISION}" ]; then
 	cat <<-EOD >${PACKAGENAME}.ver
-		VERSION="${_VERSION}"
-		REVISION="${_REVISION}"
+		VERSION=${_VERSION}
+		REVISION=${_REVISION}
 	EOD
 	VERSION="${_VERSION}"; unset _VERSION
 	REVISION="${_REVISION}"; unset _REVISION
