@@ -1,4 +1,4 @@
-.TH @PACKAGENAME@ 1 08/15/2008 aeon.icebear.org "rfc retriever and viewer"
+.TH @PACKAGENAME@ 1 @MANPAGEDATE@ aeon.icebear.org "rfc retriever and viewer"
 
 .SH NAME
 @PACKAGENAME@ \- An RFC document retriever and viewer

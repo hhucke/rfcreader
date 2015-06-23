@@ -1,4 +1,4 @@
-.TH @PACKAGENAME@ 1 07/04/2007 aeon.icebear.org "RFC-Beschaffer und -Anzeiger"
+.TH @PACKAGENAME@ 1 @MANPAGEDATE@ aeon.icebear.org "RFC-Beschaffer und -Anzeiger"
 
 .SH NAME
 @PACKAGENAME@ \- Ein RFC-Dokument-Beschaffer und -Anzeiger
