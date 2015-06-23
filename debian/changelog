@@ -1,3 +1,16 @@
+rfcreader (1.0.2) unstable; urgency=low
+
+  * Cosmetics and detail tuning
+  * Another hunk where varnames were "escaped"
+  * Replaced universal backticks with more secure ones
+  * Pass version information to debuild
+  * Adaptions concerning man page and version handling
+  * Exporting essential variables into make env
+  * Man page date adaption
+  * Version information adaption
+
+ -- Henning Hucke <h_hucke+debpackage@aeon.icebear.org>  Tue, 23 Jun 2015 16:26:55 +0200
+
 rfcreader (1.0.1) unstable; urgency=low
 
   * Initial Release.
