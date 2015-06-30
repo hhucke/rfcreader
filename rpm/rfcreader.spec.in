@@ -30,7 +30,7 @@ RFCs.
 %attr(0555,root,root) %{_bindir}/%{name}
 %doc %{_mandir}/man?/%{name}*
 %doc %{_mandir}/de*/man?/%{name}*
-%dir %{_localstatedir}/cache/rfcs
+%dir @RFCCACHEDIR@
 
 %prep
 %setup -q -n %{name}

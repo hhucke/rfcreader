@@ -54,6 +54,8 @@ while [ $# -ge 1 ]; do
 			HOSTARCH="${1##--host=}"; shift;;
 		--program-prefix=*)
 			PROGRAMPREFIX="${1##--program-prefix=}"; shift;;
+		--rfccachedir=*)
+			RFCCACHEDIR="${1##--rfccachedir=}"; shift;;
 		--*)
 			echo "Unknown option: $1"; shift;;
 		--)
@@ -92,6 +94,7 @@ fi
 : ${BUILDARCH:=x86_64-suse-linux-gnu}
 : ${TARGETARCH:=linux-suse-x86_64-gnu}
 : ${PROGRAMPREFIX:=${PACKAGENAME}}
+: ${RFCCACHEDIR:=${LOCALSTATEDIR}/cache/rfcs}}
 
 if [ -r ${PACKAGENAME}.ver ]; then
 	source ${PACKAGENAME}.ver
@@ -142,6 +145,7 @@ for file in $files; do
 		s%@BUILDARCH@%${BUILDARCH}%g;\
 		s%@TARGETARCH@%${TARGETARCH}%g;\
 		s%@HOSTARCH@%${HOSTARCH}%g;\
+		s%@RFCCACHEDIR@%${RFCCACHEDIR}%g;\
 		s%@PROGRAMPREFIX@%${PROGRAMPREFIX}%g" >${file%%.in}
 	chmod --reference=${file} ${file%%.in}
 done

@@ -30,7 +30,7 @@ trap 'test -n "${files2del}" && rm -f ${files2del}' INT QUIT ABRT KILL TERM EXIT
 ##--- Whats the name of this script?
 SCNAME="${0##*/}"
 ##--- Some presets which might be overwritten
-: ${RFCPATHS:="${HOME}/.cache/${SCNAME}:@LOCALSTATEDIR@/cache/rfcs:@DATADIR@/doc/RFC/links"}
+: ${RFCPATHS:="${HOME}/.cache/${SCNAME}:@RFCCACHEDIR@:@DATADIR@/doc/RFC/links"}
 : ${RFCEXTENSIONS:=".txt.gz .txt .html"}
 : ${RFCSOURCES:="http://www.rfc-editor.org/rfc/ ftp://ftp.isi.edu/in-notes/"}
 : ${TMPDIR:="/tmp"}
