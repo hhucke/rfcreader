@@ -111,6 +111,11 @@ function retrieverfc () {
 
 	return ${retval}
 }
+function showrfc () {
+	local rfcfile="${1}"
+	test "${PAGER##*/}" = "less" && PAGEROPTS="'${rfcfile##*/}', lines %lt-%lb of %L"
+	$PAGER${PAGEROPTS:+ -PM"${PAGEROPTS}"} ${rfcfile}
+}
 ##--- Main program
 process_opts="1"
 while [ -n "${process_opts}" ]; do
@@ -157,13 +162,19 @@ done
 
 for rfcfile in ${RFCSFOUND}; do
 	if [ -n "${firstshown}" ]; then
-		read -ersp "--${SCNAME}-- next: ${rfcfile##*/} [ view (return) | skip (Ctrl-D) | quit (Ctrl-C) ]"
-		if [ $? -gt 0 ]; then
-			continue
-		elif [ -z "${REPLY}" ]; then
-			test "${PAGER##*/}" = "less" && PAGEROPTS="'${rfcfile##*/}', lines %lt-%lb of %L"
-			$PAGER${PAGEROPTS:+ -PM"${PAGEROPTS}"} ${rfcfile}
+		if REPLY="$(read -ersp "--${SCNAME}-- next: ${rfcfile##*/} [ view (return) | skip (Ctrl-D) | quit (Ctrl-C) ]" || REPLY='skiped'; echo "${REPLY}")"; then
+			if [ "${REPLY}" == "skiped" ]; then
+				echo
+				continue
+			elif [ -z "${REPLY}" ]; then
+				showrfc "${rfcfile}"
+			fi
+		else
+			echo
+			break
 		fi
+	else
+		showrfc "${rfcfile}"
 	fi
 	firstshown='1'
 done

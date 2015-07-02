@@ -1,8 +1,8 @@
 rfcreader (1.0.3) unstable; urgency=low
 
-  * Version 1.0.2
+  * Make RFC cache directory usable by everybody
 
- -- Henning Hucke <h_hucke+project.rfcreader@aeon.icebear.org>  Tue, 30 Jun 2015 12:28:40 +0200
+ -- Henning Hucke <h_hucke+project.rfcreader@aeon.icebear.org>  Tue, 30 Jun 2015 12:31:38 +0200
 
 rfcreader (1.0.2) unstable; urgency=low
 
