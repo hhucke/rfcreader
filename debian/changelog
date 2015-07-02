@@ -1,3 +1,10 @@
+rfcreader (1.0.4) unstable; urgency=low
+
+  * Make RFC cache directory usable by everybody
+  * Minor cleaning and multiple file handling like man
+
+ -- Henning Hucke <h_hucke+project.rfcreader@aeon.icebear.org>  Thu, 02 Jul 2015 14:12:14 +0200
+
 rfcreader (1.0.3) unstable; urgency=low
 
   * Make RFC cache directory usable by everybody
