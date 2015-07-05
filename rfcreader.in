@@ -33,6 +33,7 @@ SCNAME="${0##*/}"
 : ${RFCPATHS:="${HOME}/.cache/${SCNAME}:@RFCCACHEDIR@:@DATADIR@/doc/RFC/links"}
 : ${RFCEXTENSIONS:=".txt.gz .txt .html"}
 : ${RFCSOURCES:="http://www.rfc-editor.org/rfc/ ftp://ftp.isi.edu/in-notes/"}
+: ${RFCPAGER:="${PAGER:-less}"}
 : ${TMPDIR:="/tmp"}
 ##--- Some special variables
 RFCSFOUND=''
@@ -113,8 +114,8 @@ function retrieverfc () {
 }
 function showrfc () {
 	local rfcfile="${1}"
-	test "${PAGER##*/}" = "less" && PAGEROPTS="'${rfcfile##*/}', lines %lt-%lb of %L"
-	$PAGER${PAGEROPTS:+ -PM"${PAGEROPTS}"} ${rfcfile}
+	test "${RFCPAGER##*/}" = "less" && RFCPAGEROPTS="'${rfcfile##*/}', lines %lt-%lb of %L"
+	$RFCPAGER${RFCPAGEROPTS:+ -PM"${RFCPAGEROPTS}"} ${rfcfile}
 }
 ##--- Main program
 process_opts="1"
