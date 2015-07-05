@@ -1,0 +1,21 @@
+#!/bin/bash
+
+SCNAME="${0##*/}"
+
+cachedirs='@RFCCACHEDIR@'
+holdtime="+30"
+
+while [ $# -gt 0 ]; do
+	case "${1}" in
+		-d|--cachedirs)
+			cachedirs="${2}"; shift;;
+		-t|--holdtime)
+			holdtime="${2}"; shift;;
+		*)
+			echo "${SCNAME}: Unknown option or argument '${1}'" >&2
+			exit 10;;
+	esac
+	shift
+done
+
+find $(echo "${cachedirs}" | tr ':' ' ') -type f -atime ${holdtime} -execdir rm -fv \{\} +
