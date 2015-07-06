@@ -1,0 +1,48 @@
+.TH @PACKAGENAME@_maintenance 1 @MANPAGEDATE@ aeon.icebear.org "@PACKAGENAME@ Pflegeprogramm"
+
+.SH NAME
+@PACKAGENAME@_maintenance \- Cache-Pflege für @PACKAGENAME@
+
+.SH SYNOPSIS
+.B @PACKAGENAME@_maintenance
+.RB [\| \-\-cachedirs \||\| \-d
+.IR dirs \|]
+.RB [\| --holdtime \||\| \-t
+.IR days \|]
+
+.SH DESCRIPTION
+.B @PACKAGENAME@_maintenance
+ist ein Pflege-Programm für das @PACKAGENAME@-Paket. Es löscht im wesentlichen
+von den externen Server geholte Dateien aus den Cache-Verzeichnissen
+(Standard: @RFCCACHEDIR@) wenn sie für länger als \*(lqholdtime\*(rq Tage
+(Standard: @RFCHOLDTIME@) nicht verwendet wurden.
+
+Durch Aufruf mit passenden Argumenten ist das Script auch für die Pflege von
+persönlichen Cache-Verzeichnissen geeignet.
+
+.SH OPTIONS
+.TP
+.BI \-\-cachedirs " dirs"
+ist eine Liste von
+.I Verzeichnissen
+- gegebenenfalls mehr als eines durch Doppelpunkte voneinander getrennt
+(\*(lq:\*(rq) - welche nach herunter geladenen Dateien durchsucht werden.
+.TP
+.BI \-\-holdtime " days"
+bezeichnet die Anzahl von
+.I Tagen
+die eine herunter geladene Datei maximal im Cache-Verzeichnis verbleiben kann.
+
+.SH BUGS
+Bisher keine bekannten.
+
+.SH AUTHOR
+.P
+Copyright (C) 2006-2008
+by
+.UR mailto:@EMAILADDR@
+@AUTHOR@
+.UE
+
+.SH SEE ALSO
+.BR find (1).

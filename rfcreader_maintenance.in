@@ -3,7 +3,7 @@
 SCNAME="${0##*/}"
 
 cachedirs='@RFCCACHEDIR@'
-holdtime="+30"
+holdtime="@RFCHOLDTIME@"
 
 while [ $# -gt 0 ]; do
 	case "${1}" in
@@ -18,4 +18,4 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
-find $(echo "${cachedirs}" | tr ':' ' ') -type f -atime ${holdtime} -execdir rm -fv \{\} +
+find $(echo "${cachedirs}" | tr ':' ' ') -mindepth 1 -type f \( -atime +${holdtime} -or -atime ${holdtime} \) -execdir rm -fv \{\} +

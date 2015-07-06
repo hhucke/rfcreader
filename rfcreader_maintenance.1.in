@@ -1,0 +1,49 @@
+.TH @PACKAGENAME@_maintenance 1 @MANPAGEDATE@ aeon.icebear.org "@PACKAGENAME@ maintenance executable"
+
+.SH NAME
+@PACKAGENAME@_maintenance \- Cache maintenance for @PACKAGENAME@
+
+.SH SYNOPSIS
+.B @PACKAGENAME@_maintenance
+.RB [\| \-\-cachedirs \||\| \-d
+.IR dirs \|]
+.RB [\| --holdtime \||\| \-t
+.IR days \|]
+
+.SH DESCRIPTION
+.B @PACKAGENAME@_maintenance
+is the maintenance script for the @PACKAGENAME@ package. Basicly it deletes
+fetched RFC files from the given cache directories (default: @RFCCACHEDIR@)
+if they were not accessed for longer than \*(lqholdtime\*(rq days
+(default: @RFCHOLDTIME@).
+
+By calling the script with appropriate arguments it is also suitable to
+maintain private cache directories.
+
+.SH OPTIONS
+.TP
+.BI \-\-cachedirs " dirs"
+is a list of
+.I dirs
+- possibly more than one delimited by doubledots (\*(lq:\*(rq) - which are
+checked for fetched files.
+.TP
+.BI \-\-holdtime " days"
+is the number of
+.I days
+a fetched file is left in the cache directory.
+
+
+.SH BUGS
+None known yet.
+
+.SH AUTHOR
+.P
+Copyright (C) 2006-2008
+by
+.UR mailto:@EMAILADDR@
+@AUTHOR@
+.UE
+
+.SH SEE ALSO
+.BR find (1).
