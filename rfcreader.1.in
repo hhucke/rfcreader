@@ -33,6 +33,12 @@ either just the rfc number for the requested document or the full rfc name
 
 .SH ENVIRONMENT
 .TP
+.B RFCPAGER
+The pager to use to display the RFC. If not explicitly set the content of
+the
+.I PAGER
+environment variable is used or \*(lqless\*(rq if this is also empty.
+.TP
 .B RFCPATHS
 Local directories to search for requested RFCs. The first writable directory
 is the one where retrieved RFCs are written to.

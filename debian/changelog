@@ -1,3 +1,10 @@
+rfcreader (1.1.0) unstable; urgency=low
+
+  * Possibility to supply a special rfcreader pager
+  * Added maintenance script and corresponding man pages to package
+
+ -- Henning Hucke <h_hucke+project.rfcreader@aeon.icebear.org>  Mon, 06 Jul 2015 16:03:53 +0200
+
 rfcreader (1.0.4) unstable; urgency=low
 
   * Make RFC cache directory usable by everybody

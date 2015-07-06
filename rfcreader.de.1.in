@@ -34,6 +34,12 @@ RFC-Name (wie zum Beispiel \*(lqrfc-index\*(rq oder \*(lqrfc2822\*(rq).
 
 .SH ENVIRONMENT
 .TP
+.B RFCPAGER
+Der Pager, der für die Darstellung des RFCs verwendet wird. Wenn diese Variable
+nicht explizit gesetzt ist, wird der Inhalt der Umgebungsvariable
+.I PAGER
+als Pager verwendet oder \*(lqless\*(rq, wenn auch diese leer ist.
+.TP
 .B RFCPATHS
 Lokale Verzeichnisse in denen nach spezifizierten RFCs gesucht wird. In das
 erste beschreibbare Verzeichnis werden extern gefundene RFCs herunter geladen.
