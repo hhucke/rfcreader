@@ -13,8 +13,8 @@
 
 .SH DESCRIPTION
 .B @PACKAGENAME@
-ist ein Script das einen Pager mit lokal verfügbaren RFC-Dokumenten startet.
-Wenn das spezifizierte Dokument nicht lokal verfügbar ist wird es via FTP
+ist ein Script, dass einen Pager mit lokal verfügbaren RFC-Dokumenten startet.
+Wenn das spezifizierte Dokument nicht lokal verfügbar ist, wird es via FTP
 oder HTTP von konfigurierbaren Quellen geholt. Auf diese Weise muss der
 nachfragende User sich nicht darum kümmern, woher das gewünschte RFC-Dokument
 kommt.
