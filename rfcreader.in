@@ -45,7 +45,13 @@ opt_force=''
 opt_help=''
 ##--- Some functions
 function help () {
-      sed '/^##--- Help$/,/^##--- Help end$/ s/^## //;1,/^##--- Help$/ d;/^##--- Help end$/,$ d' < $0 | m4 -D SCNAME="${SCNAME}"
+	sed -r '
+		/^##--- Help$/,/^##--- Help end$/ {
+			s/^## //
+			s/HELP_SCNAME/'"${SCNAME}"'/g
+		}
+		1,/^##--- Help$/ d
+		/^##--- Help end$/,$ d' < $0
 }
 function findrfc () {
 	# usage: findrfc rfcname

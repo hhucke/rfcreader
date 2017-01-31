@@ -69,7 +69,10 @@ install:
 
 .PHONY: clean
 clean:
-	@rm -fv $(filter-out makefile,$(all)) $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz
+	@$(RM) -v $(filter-out debian/control makefile,$(all)) $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz
+
+distclean: clean
+	@$(RM) -v debian/control
 
 rpm: $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz rpm/$(PACKAGENAME).spec
 	rpmbuild --clean --target=noarch-aeon-linux -ta $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz
