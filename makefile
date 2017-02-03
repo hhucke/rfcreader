@@ -71,7 +71,8 @@ install:
 clean:
 	@$(RM) -v $(filter-out debian/control makefile,$(all)) $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz
 
-distclean: clean
+.PHONY: reallyclean
+reallyclean: clean
 	@$(RM) -v debian/control
 
 rpm: $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz rpm/$(PACKAGENAME).spec
