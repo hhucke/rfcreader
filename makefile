@@ -30,6 +30,7 @@ export BINDIR SBINDIR SYSCONFDIR DATADIR INCLUDEDIR LIBDIR LIBEXECDIR
 export LOCALSTATEDIR SHAREDSTATEDIR RFCCACHEDIR RFCHOLDTIME
 export MANDIR INFODIR
 export VERSION REVISION
+export USER MAILLOCALPART MAILDOMAIN DOMAIN_MAIL_DEVELOPMENT
 
 install:=install
 link:=ln -sfn
@@ -80,7 +81,10 @@ rpm: $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz rpm/$(PACKAGENAME).spec
 	touch rpm
 
 debian: $(allfiles)
-	debuild -us -uc -tc -I'.git*' -v$(VERSION).$(REVISION)
+	debuild \
+		--preserve-envvar=USER --preserve-envvar=MAILDOMAIN \
+		--preserve-envvar=MAILLOCALPART --preserve-envvar=DOMAIN_MAIL_DEVELOPMENT \
+		-us -uc -tc -I'.git*' -v$(VERSION).$(REVISION)
 	touch debian
 
 .PHONY: tarfile

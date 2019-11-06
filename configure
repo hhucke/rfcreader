@@ -72,14 +72,16 @@ if [ -z "$files" ]; then
 fi
 
 : ${USER:=nobody}
+: ${MAILLOCALPART:=${USER}}
 : ${MAILDOMAIN:=icebear.org}
+: ${DOMAIN_MAIL_DEVELOPMENT:=${MAILDOMAIN}}
 : ${AUTONOMOUS_SYSTEM:=Aeon}
 : ${SITENAME:=${AUTONOMOUS_SYSTEM}}
 : ${DIRBASENAME:="${PWD##*/}"}
 
 : ${PACKAGENAME:=${DIRBASENAME}}
 : ${AUTHOR:=$(getent passwd $USER | cut -d : -f 5 | cut -d , -f 1)}
-: ${EMAILADDR:=${USER}+project.${PACKAGENAME}@${MAILDOMAIN}}
+: ${EMAILADDR:=${MAILLOCALPART}+project.${PACKAGENAME}@${DOMAIN_MAIL_DEVELOPMENT}}
 : ${PREFIX:=/usr}
 : ${EXECPREFIX:=$PREFIX}
 : ${BINDIR:=$EXECPREFIX/bin}
@@ -124,6 +126,7 @@ for file in $files; do
 	sed -e "s%@DIRBASENAME@%${DIRBASENAME}%g;\
 		s%@MANPAGEDATE@%${MANPAGEDATE}%g;\
 		s%@MAILDOMAIN@%${MAILDOMAIN}%g;\
+		s%@DOMAIN_MAIL_DEVELOPMENT@%${DOMAIN_MAIL_DEVELOPMENT}%g;\
 		s%@AUTONOMOUS_SYSTEM@%${AUTONOMOUS_SYSTEM}%g;\
 		s%@SITENAME@%${SITENAME}%g;\
 		s%@PACKAGENAME@%${PACKAGENAME}%g;\
