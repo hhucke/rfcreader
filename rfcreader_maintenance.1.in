@@ -12,7 +12,7 @@
 
 .SH DESCRIPTION
 .B @PACKAGENAME@_maintenance
-is the maintenance script for the @PACKAGENAME@ package. Basicly it deletes
+is the maintenance script for the @PACKAGENAME@ package. Basically it deletes
 fetched RFC files from the given cache directories (default: @RFCCACHEDIR@)
 if they were not accessed for longer than \*(lqholdtime\*(rq days
 (default: @RFCHOLDTIME@).

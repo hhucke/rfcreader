@@ -21,7 +21,7 @@ sources for the RFC documents.
 .SH OPTIONS
 .TP
 .BI \-\-force
-force the retrieval of the requested RFCs from external sources. Usefull
+force the retrieval of the requested RFCs from external sources. Useful
 for the \*(lqrfc-index\*(rq document.
 .TP
 .IR rfcnum
