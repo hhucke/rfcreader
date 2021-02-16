@@ -108,7 +108,7 @@ function retrieverfc () {
 	for resource in ${RFCSOURCES}; do
 		for extension in ${RFCEXTENSIONS}; do
 			eval $(makename ${rfcname} localname ${extension})
-			if curl -s -f -o ${localname} "${resource}${rfcname}${extension}"; then
+			if curl --location --silent --fail --output ${localname} "${resource}${rfcname}${extension}"; then
 				echo "files2del='${files2del}'; ${varname}='${localname}'"
 				retval='0'
 				break 2
