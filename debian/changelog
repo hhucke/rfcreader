@@ -1,3 +1,10 @@
+rfcreader (1.1.2) stable; urgency=low
+
+  * Maintenance of global cache directory is now done via systemd-tmpfiles.
+  * Removed global cron.d script for this maintenance.
+
+ -- Henning Hucke <h_hucke+project.rfcreader@aeon.icebear.org>  Tue, 16 Jul 2021 22:40:25 +0200
+
 rfcreader (1.1.0) unstable; urgency=low
 
   * Possibility to supply a special rfcreader pager

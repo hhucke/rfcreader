@@ -12,5 +12,5 @@
 %:
 	dh $@ 
 
-override_dh_fixperms:
-	dh_fixperms -X/var/cache/rfcs
+#override_dh_fixperms:
+#	dh_fixperms -X/var/cache/rfcs

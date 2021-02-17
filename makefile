@@ -60,13 +60,10 @@ rpm/$(PACKAGENAME).spec: rpm/$(PACKAGENAME).spec.in $(PACKAGENAME).ver
 .PHONY: install install-$(PACKAGENAME)
 install-$(PACKAGENAME):
 install:
-	install -d -m 1777 -o nobody -g nogroup $(DESTDIR)/$(RFCCACHEDIR); \
 	install -D $(PACKAGENAME) $(DESTDIR)/$(BINDIR)/$(PACKAGENAME); \
-	install -D $(PACKAGENAME)_maintenance $(DESTDIR)/$(BINDIR)/$(PACKAGENAME)_maintenance; \
 	install -D -m 0644 $(PACKAGENAME).1 $(DESTDIR)/$(MANDIR)/man1/$(PACKAGENAME).1; \
 	install -D -m 0644 $(PACKAGENAME).de.1 $(DESTDIR)/$(MANDIR)/de/man1/$(PACKAGENAME).1; \
-	install -D -m 0644 $(PACKAGENAME)_maintenance.1 $(DESTDIR)/$(MANDIR)/man1/$(PACKAGENAME)_maintenance.1; \
-	install -D -m 0644 $(PACKAGENAME)_maintenance.de.1 $(DESTDIR)/$(MANDIR)/de/man1/$(PACKAGENAME)_maintenance.1; \
+	install -D -m 0644 $(PACKAGENAME)_tmpfiles $(DESTDIR)/$(LIBDIR)/tmpfiles.d/$(PACKAGENAME).conf;
 
 .PHONY: clean
 clean:
