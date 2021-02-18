@@ -1,0 +1,4 @@
+# At least the global cache directory should be queried.
+# Possibly extend this content if you've got RFC collections
+# installed locally.
+setenv RFCPATHS '@RFCCACHEDIR@'
