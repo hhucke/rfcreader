@@ -1,0 +1,2 @@
+# /usr/lib/tmpfiles.d/rfcreader.conf
+d	@RFCCACHEDIR@		1777	nobody	nogroup	@RFCHOLDTIME@d	-

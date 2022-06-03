@@ -60,21 +60,25 @@ rpm/$(PACKAGENAME).spec: rpm/$(PACKAGENAME).spec.in $(PACKAGENAME).ver
 .PHONY: install install-$(PACKAGENAME)
 install-$(PACKAGENAME):
 install:
-	install -d -m 1777 -o nobody -g nogroup $(DESTDIR)/$(RFCCACHEDIR); \
 	install -D $(PACKAGENAME) $(DESTDIR)/$(BINDIR)/$(PACKAGENAME); \
-	install -D $(PACKAGENAME)_maintenance $(DESTDIR)/$(BINDIR)/$(PACKAGENAME)_maintenance; \
-	install -D -m 0644 $(PACKAGENAME).1 $(DESTDIR)/$(MANDIR)/man1/$(PACKAGENAME).1; \
-	install -D -m 0644 $(PACKAGENAME).de.1 $(DESTDIR)/$(MANDIR)/de/man1/$(PACKAGENAME).1; \
-	install -D -m 0644 $(PACKAGENAME)_maintenance.1 $(DESTDIR)/$(MANDIR)/man1/$(PACKAGENAME)_maintenance.1; \
-	install -D -m 0644 $(PACKAGENAME)_maintenance.de.1 $(DESTDIR)/$(MANDIR)/de/man1/$(PACKAGENAME)_maintenance.1; \
+	install -D -m 0644 $(PACKAGENAME)_envvars.sh $(DESTDIR)$(SYSCONFDIR)/profile.d/$(PACKAGENAME).sh; \
+	install -D -m 0644 $(PACKAGENAME)_envvars.csh $(DESTDIR)$(SYSCONFDIR)/csh/login.d/$(PACKAGENAME).csh; \
+	install -D -m 0644 $(PACKAGENAME).1 $(DESTDIR)$(MANDIR)/man1/$(PACKAGENAME).1; \
+	install -D -m 0644 $(PACKAGENAME).de.1 $(DESTDIR)$(MANDIR)/de/man1/$(PACKAGENAME).1; \
+	install -D -m 0644 $(PACKAGENAME)_tmpfiles $(DESTDIR)$(LIBDIR)/tmpfiles.d/$(PACKAGENAME).conf;
+
+.PHONY: test check
+check:
+test:
+	@echo "No tests necessary. Sorry!"
 
 .PHONY: clean
 clean:
-	@$(RM) -v $(filter-out debian/control makefile,$(all)) $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz
+	@$(RM) -v $(filter-out debian/control debian/copyright makefile,$(all)) $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz
 
 .PHONY: reallyclean
 reallyclean: clean
-	@$(RM) -v debian/control
+	@$(RM) -v debian/control debian/copyright
 
 rpm: $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz rpm/$(PACKAGENAME).spec
 	rpmbuild --clean --target=noarch-aeon-linux -ta $(PACKAGENAME)-$(VERSION)-$(REVISION).tgz

@@ -13,7 +13,7 @@
 ## 
 ## This script tries to retrieve the rfcs in question from configurable sources.
 ## First it tries to find them in the paths found in the environment variable
-## "RFCPATHS" (by default "/usr/share/doc/RFC/links", multiple paths separated by
+## "RFCPATHS" (by default "@RFCCACHEDIR@", multiple paths separated by
 ## colons), then it tries to retrieve them from selected URLs found in
 ## "RFCSOURCES" (by default "http://www.rfc-editor.org/rfc/", multiple sources
 ## separated by spaces).
@@ -30,9 +30,9 @@ trap 'test -n "${files2del}" && rm -f ${files2del}' INT QUIT ABRT KILL TERM EXIT
 ##--- Whats the name of this script?
 SCNAME="${0##*/}"
 ##--- Some presets which might be overwritten
-: ${RFCPATHS:="${HOME}/.cache/${SCNAME}:@RFCCACHEDIR@:@DATADIR@/doc/RFC/links"}
+: ${RFCPATHS:='@RFCCACHEDIR@'}
 : ${RFCEXTENSIONS:=".txt.gz .txt .html"}
-: ${RFCSOURCES:="http://www.rfc-editor.org/rfc/ ftp://ftp.isi.edu/in-notes/"}
+: ${RFCSOURCES:='http://www.rfc-editor.org/rfc/ http://www.rfc-editor.org/rfc/std http://www.rfc-editor.org/rfc/bcp http://www.rfc-editor.org/rfc/fyi ftp://ftp.isi.edu/in-notes/'}
 : ${RFCPAGER:="${PAGER:-less}"}
 : ${TMPDIR:="/tmp"}
 ##--- Some special variables
@@ -108,7 +108,7 @@ function retrieverfc () {
 	for resource in ${RFCSOURCES}; do
 		for extension in ${RFCEXTENSIONS}; do
 			eval $(makename ${rfcname} localname ${extension})
-			if curl -s -f -o ${localname} "${resource}${rfcname}${extension}"; then
+			if curl --location --silent --fail --output ${localname} "${resource}${rfcname}${extension}"; then
 				echo "files2del='${files2del}'; ${varname}='${localname}'"
 				retval='0'
 				break 2

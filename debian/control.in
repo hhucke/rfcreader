@@ -1,12 +1,12 @@
 Source: @PACKAGENAME@
 Section: misc
-Priority: extra
-Maintainer: Henning Hucke <h_hucke+project.@PACKAGENAME@@aeon.icebear.org>
-Build-Depends: debhelper (>= 7.0.50~), autotools-dev
-Standards-Version: 3.9.1
+Priority: optional
+Maintainer: @AUTHOR@ <@EMAILADDR@>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 3.9.8
 #Homepage: <insert the upstream URL, if relevant>
-#Vcs-Git: git://git.debian.org/collab-maint/@PACKAGENAME@.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/@PACKAGENAME@.git;a=summary
+#Vcs-Browser: https://salsa.debian.org/debian/rfcreader
+#Vcs-Git: https://salsa.debian.org/debian/rfcreader.git
 
 Package: @PACKAGENAME@
 Architecture: all

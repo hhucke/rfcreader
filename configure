@@ -3,8 +3,9 @@
 ## configure script to configure the package hookwall
 ##
 SED="/usr/bin/sed"
-MONTHYEAR="$(date +'%B %Y')"
-MANPAGEDATE="$(date +'%m/%d/%Y')"
+DATE_YEAR="$(date +'%Y')"
+DATE_MONTHYEAR="$(date +'%B %Y')"
+DATE_MANPAGEDATE="$(date +'%m/%d/%Y')"
 
 files=''
 
@@ -124,13 +125,14 @@ fi
 for file in $files; do
 	echo 'm4_changequote(`{{{'"'"', `}}}'"'"')m4_dnl' | m4 -P - ${file} | \
 	sed -e "s%@DIRBASENAME@%${DIRBASENAME}%g;\
-		s%@MANPAGEDATE@%${MANPAGEDATE}%g;\
+		s%@MANPAGEDATE@%${DATE_MANPAGE}%g;\
 		s%@MAILDOMAIN@%${MAILDOMAIN}%g;\
 		s%@DOMAIN_MAIL_DEVELOPMENT@%${DOMAIN_MAIL_DEVELOPMENT}%g;\
 		s%@AUTONOMOUS_SYSTEM@%${AUTONOMOUS_SYSTEM}%g;\
 		s%@SITENAME@%${SITENAME}%g;\
 		s%@PACKAGENAME@%${PACKAGENAME}%g;\
-		s%@MONTHYEAR@%${MONTHYEAR}%g;\
+		s%@YEAR@%${DATE_YEAR}%g;\
+		s%@MONTHYEAR@%${DATE_MONTHYEAR}%g;\
 		s%@VERSION@%${VERSION}%g;\
 		s%@REVISION@%${REVISION}%g;\
 		s%@AUTHOR@%${AUTHOR}%g;\

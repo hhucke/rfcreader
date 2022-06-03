@@ -1,0 +1,2 @@
+?package(rfcreader):needs="text" section="Help"\
+  title="rfcreader" command="/usr/bin/rfcreader"
